@@ -16,7 +16,6 @@ public class MyCube : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        print("Hello world!");
     }
 
     // Update is called once per frame
@@ -30,6 +29,5 @@ public class MyCube : MonoBehaviour
 
     void FixedUpdate()
     {
-        
     }
 }
