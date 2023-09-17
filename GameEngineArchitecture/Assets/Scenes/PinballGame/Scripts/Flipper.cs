@@ -24,13 +24,10 @@ public class Flipper : MonoBehaviour
         if (Input.GetKeyDown(Button))
         {
             _timer = 0;
-            print("Reset");
         }
         
         _timer += Time.deltaTime;
-    }
-    
-    private void FixedUpdate() {
+        
         int direction = _isLeftFlipper ? -1 : 1;
         _rb.MoveRotation(_initialRotation * Quaternion.Euler(0,0,animationCurve.Evaluate(_timer) * 90f * direction));
     }
