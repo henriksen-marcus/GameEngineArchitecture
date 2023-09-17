@@ -13,7 +13,7 @@ public class PinballGameMode : MonoBehaviour
     
     void Start()
     {
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
