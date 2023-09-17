@@ -1961,6 +1961,8 @@ GameObject:
   - component: {fileID: 5126499890673160267}
   - component: {fileID: 5080251941196779969}
   - component: {fileID: 333844958215893935}
+  - component: {fileID: 1920851548054956501}
+  - component: {fileID: 6554785204432828502}
   m_Layer: 0
   m_Name: LeverLeft
   m_TagString: Untagged
@@ -1977,9 +1979,9 @@ Transform:
   m_GameObject: {fileID: 3976342003911392350}
   serializedVersion: 2
   m_LocalRotation: {x: 0.17678522, y: 0.684651, z: 0.684651, w: -0.17678522}
-  m_LocalPosition: {x: -1.309, y: 0.13455296, z: -3.494}
-  m_LocalScale: {x: 0.18, y: 0.18, z: 0.18}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: -1.309, y: 0.395, z: -3.494}
+  m_LocalScale: {x: 0.18, y: 0.18, z: 0.934236}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1775122259297578164}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 208.956}
@@ -2052,8 +2054,92 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 6.727381, y: 1, z: 0.821552}
+  m_Center: {x: -2.8636806, y: 0.000006827594, z: -0.0049220105}
+--- !u!54 &1920851548054956501
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3976342003911392350}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &6554785204432828502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3976342003911392350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51b113688c753ea49a32c4d77b8a7d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Button: 97
+  animationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.0023498535
+      inSlope: 17.091976
+      outSlope: 17.091976
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.064463705
+    - serializedVersion: 3
+      time: 0.17401415
+      value: 1
+      inSlope: 0.048231836
+      outSlope: 0.048231836
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.28100678
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.4550574
+      value: 0.17883295
+      inSlope: -1.0396566
+      outSlope: -1.0396566
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.0866926
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _timer: 1
+  _isLeftFlipper: 1
 --- !u!1 &4348776868282444062
 GameObject:
   m_ObjectHideFlags: 0
@@ -2733,6 +2819,7 @@ GameObject:
   - component: {fileID: 8174323380440169435}
   - component: {fileID: 3651319159161003025}
   - component: {fileID: 7033119711155138539}
+  - component: {fileID: 3002992066227921944}
   m_Layer: 0
   m_Name: LeverRight
   m_TagString: Untagged
@@ -2749,9 +2836,9 @@ Transform:
   m_GameObject: {fileID: 6269618265165119430}
   serializedVersion: 2
   m_LocalRotation: {x: -0.6830127, y: -0.18301266, z: -0.18301266, w: 0.6830127}
-  m_LocalPosition: {x: 1.403, y: 0.13460732, z: -3.467}
-  m_LocalScale: {x: 0.18, y: 0.18, z: 0.18}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 1.403, y: 0.362, z: -3.467}
+  m_LocalScale: {x: 0.18, y: 0.18, z: 0.82974607}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1775122259297578164}
   m_LocalEulerAnglesHint: {x: -90, y: -30, z: 0}
@@ -2824,8 +2911,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 6.710118, y: 1, z: 0.8489717}
+  m_Center: {x: -2.8550594, y: -0.0000016643154, z: 0.008520865}
 --- !u!54 &7033119711155138539
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2853,6 +2940,63 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3002992066227921944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6269618265165119430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51b113688c753ea49a32c4d77b8a7d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Button: 100
+  animationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.0023498535
+      inSlope: 17.091976
+      outSlope: 17.091976
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.064463705
+    - serializedVersion: 3
+      time: 0.17401415
+      value: 1
+      inSlope: 0.048231836
+      outSlope: 0.048231836
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.28100678
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.4550574
+      value: 0.17883295
+      inSlope: -1.0396566
+      outSlope: -1.0396566
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.0866926
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _timer: 1
+  _isLeftFlipper: 0
 --- !u!1 &6270927844554813751
 GameObject:
   m_ObjectHideFlags: 0
