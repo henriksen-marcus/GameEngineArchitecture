@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Car : MonoBehaviour
@@ -9,9 +10,11 @@ public class Car : MonoBehaviour
     [SerializeField] WheelCollider frontRightWheel;
     [SerializeField] WheelCollider rearLeftWheel;
     [SerializeField] WheelCollider rearRightWheel;
-    [SerializeField] float maxMotorForce = 1500f;
-    [SerializeField] float maxBrakeTorque = 100f;
-    [SerializeField] float maxTurnAngle = 30f;
+    [SerializeField] float maxMotorForce = 500f;
+    [SerializeField] float maxBrakeTorque = 500f;
+    [SerializeField] float maxTurnAngle = 10f;
+    [SerializeField] float maxSpeed = 5f;
+    [SerializeField] private bool isActive = true;
     
     private float _currentMotorForce;
     private float _currentBrakeTorque;
@@ -21,18 +24,24 @@ public class Car : MonoBehaviour
     
     void Start()
     {
-        _rb = transform.Find("body").GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (isActive) Move();
     }
 
     private void FixedUpdate()
     {
-        _currentMotorForce = maxMotorForce * Input.GetAxis("Vertical");
+        
+    }
+
+    void Move()
+    {
+        _currentMotorForce = maxMotorForce * Input.GetAxisRaw("Vertical");
+        if (_rb.velocity.magnitude > maxSpeed) _currentMotorForce = 0;
 
         if (Input.GetKey(KeyCode.LeftControl))
         {
@@ -51,8 +60,20 @@ public class Car : MonoBehaviour
         rearRightWheel.brakeTorque = _currentBrakeTorque;
         rearLeftWheel.brakeTorque = _currentBrakeTorque;
         
-        _currentTurnAngle = maxTurnAngle * Input.GetAxis("Horizontal");
+        _currentTurnAngle = maxTurnAngle * Input.GetAxisRaw("Horizontal");
         frontLeftWheel.steerAngle = _currentTurnAngle;
         frontRightWheel.steerAngle = _currentTurnAngle;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Car"))
+        {
+            print("Seeing car");
+        }
+        else if (other.CompareTag("TrafficLight"))
+        {
+            print("Seeing traffic light");
+        }
     }
 }
