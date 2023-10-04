@@ -9,11 +9,9 @@ public class RacingCar : MonoBehaviour
     [SerializeField] [Range(0f, 100f)] float force = 10f;
 
     Vector3 InitialPos;
-     Quaternion InitialRot;
+    Quaternion InitialRot;
 
-     static float tolerance = 2f;
-
-    // Start is called before the first frame update
+     // Start is called before the first frame update
     void Start()
     {
         m_rigidbody = GetComponent<Rigidbody>();
