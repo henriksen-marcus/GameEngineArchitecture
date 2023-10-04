@@ -11,10 +11,11 @@ public class Car : MonoBehaviour
     [SerializeField] WheelCollider rearRightWheel;
     [SerializeField] float maxMotorForce = 1500f;
     [SerializeField] float maxBrakeTorque = 100f;
-    [SerializeField] float maxSteerAngle = 30f;
+    [SerializeField] float maxTurnAngle = 30f;
     
     private float _currentMotorForce;
     private float _currentBrakeTorque;
+    private float _currentTurnAngle;
 
     private Rigidbody _rb;
     
@@ -49,5 +50,9 @@ public class Car : MonoBehaviour
         frontLeftWheel.brakeTorque = _currentBrakeTorque;
         rearRightWheel.brakeTorque = _currentBrakeTorque;
         rearLeftWheel.brakeTorque = _currentBrakeTorque;
+        
+        _currentTurnAngle = maxTurnAngle * Input.GetAxis("Horizontal");
+        frontLeftWheel.steerAngle = _currentTurnAngle;
+        frontRightWheel.steerAngle = _currentTurnAngle;
     }
 }
