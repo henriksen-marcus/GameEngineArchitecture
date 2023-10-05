@@ -9,6 +9,7 @@ public class IsometricCamera : MonoBehaviour
     [SerializeField] float zoomSpeed = 1f;
     [SerializeField] float minCameraSize = 2;
     [SerializeField] float maxCameraSize = 150;
+    [SerializeField] GameObject target;
     
     [Header("Input")]
     [SerializeField] KeyCode moveForwardKey = KeyCode.UpArrow;
@@ -36,5 +37,10 @@ public class IsometricCamera : MonoBehaviour
 
         float zoomDelta = _camera.orthographicSize - Input.mouseScrollDelta.y * zoomSpeed;
         _camera.orthographicSize = Mathf.Clamp(zoomDelta, minCameraSize, maxCameraSize);
+
+        //transform.position = new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z);
+        //Physics.Raycast(transform.position, transform.forward, out var hit, 1000f);
+        
+        //print(hit.distance);
     }
 }

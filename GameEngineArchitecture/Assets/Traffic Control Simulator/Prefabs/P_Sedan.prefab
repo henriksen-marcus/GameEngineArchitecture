@@ -137,11 +137,11 @@ GameObject:
   - component: {fileID: 4449056622443793616}
   - component: {fileID: 1242958218790786704}
   - component: {fileID: 8098997464620974113}
-  - component: {fileID: 3853244127857177257}
   - component: {fileID: 1987470402964296233}
+  - component: {fileID: 3853244127857177257}
   - component: {fileID: 6369923715558849564}
   m_Layer: 0
-  m_Name: Sedan
+  m_Name: P_Sedan
   m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -244,6 +244,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4999999, y: 1.0999999, z: 2.4499998}
   m_Center: {x: 0, y: 0.54999995, z: -0.024999976}
+--- !u!65 &1987470402964296233
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2591411824941818778}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 1.4999999, y: 4.29, z: 13.96}
+  m_Center: {x: 0, y: 2.13, z: 8.26}
 --- !u!54 &3853244127857177257
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -271,27 +292,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &1987470402964296233
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2591411824941818778}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.4999999, y: 4.29, z: 13.96}
-  m_Center: {x: 0, y: 2.13, z: 8.26}
 --- !u!114 &6369923715558849564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,11 +308,16 @@ MonoBehaviour:
   frontRightWheel: {fileID: 7104796043791248374}
   rearLeftWheel: {fileID: 188991973300299757}
   rearRightWheel: {fileID: 2218973225513131432}
-  maxMotorForce: 500
+  visionCollider: {fileID: 1987470402964296233}
+  maxMotorTorque: 500
   maxBrakeTorque: 500
   maxTurnAngle: 10
   maxSpeed: 5
+  targetDistanceFromObstacle: 2
+  targetTimeFromObstacle: 2
   isActive: 1
+  takeInput: 0
+  rigidBody: {fileID: 0}
 --- !u!1 &5938488880408602339
 GameObject:
   m_ObjectHideFlags: 0
