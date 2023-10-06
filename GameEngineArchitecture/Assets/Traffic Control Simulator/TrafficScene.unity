@@ -123,6 +123,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &58156715 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2591411824941818778, guid: 9365bb668552aeb4f860d19655ddffda,
+    type: 3}
+  m_PrefabInstance: {fileID: 1937631494}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &88896540
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -907,6 +913,11 @@ PrefabInstance:
       propertyPath: visionCollider
       value: 
       objectReference: {fileID: 771614538}
+    - target: {fileID: 6369923715558849564, guid: 9365bb668552aeb4f860d19655ddffda,
+        type: 3}
+      propertyPath: targetTimeFromObstacle
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8094278890024410555, guid: 9365bb668552aeb4f860d19655ddffda,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1765,7 +1776,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.0001
   far clip plane: 500
   field of view: 60
   orthographic: 1
@@ -1816,6 +1827,7 @@ MonoBehaviour:
   zoomSpeed: 1
   minCameraSize: 2
   maxCameraSize: 150
+  target: {fileID: 58156715}
   moveForwardKey: 273
   moveBackwardKey: 274
   moveLeftKey: 276
@@ -1843,8 +1855,8 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -3351,8 +3363,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6369923715558849564, guid: 9365bb668552aeb4f860d19655ddffda,
         type: 3}
+      propertyPath: targetTimeFromObstacle
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6369923715558849564, guid: 9365bb668552aeb4f860d19655ddffda,
+        type: 3}
       propertyPath: targetDistanceFromObstacle
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8094278890024410555, guid: 9365bb668552aeb4f860d19655ddffda,
         type: 3}

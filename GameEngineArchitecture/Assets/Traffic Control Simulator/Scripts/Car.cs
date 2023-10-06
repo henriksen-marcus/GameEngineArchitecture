@@ -113,16 +113,13 @@ public class Car : MonoBehaviour
         {
             _gizmoColor = Color.yellow;
             
-            float speedTowardsObstacle = rigidBody.velocity.magnitude;
-            
-            var otherRigidBody = _currentObstacle.rigidBody;
-            if (otherRigidBody) speedTowardsObstacle -= otherRigidBody.velocity.magnitude;
+            float speedTowardsObstacle = GetSpeedTowardsObstacle();
             
             // Calculate minimum distance from the obstacle
             Vector3 ourPos = transform.position;
-            Vector3 otherPos = _currentObstacle.gameObject.transform.position;/*
-            Vector3 brakePosition = otherPos + (ourPos - otherPos).normalized * targetDistanceFromObstacle;
-            float minimumDistance = Vector3.Distance(otherPos, brakePosition);*/
+            Vector3 otherPos = _currentObstacle.gameObject.transform.position;
+            
+            Vector3 brakePosition = GetBrakePosition();
             
             // Calculate target distance from the obstacle with a time buffer
             
@@ -212,5 +209,24 @@ public class Car : MonoBehaviour
         rearLeftWheel.brakeTorque = torque;
         
         // Light up brake lights
+    }
+    
+    float GetSpeedTowardsObstacle()
+    {
+        float speedTowardsObstacle = rigidBody.velocity.magnitude;
+        var otherRigidBody = _currentObstacle.rigidBody;
+        if (otherRigidBody) speedTowardsObstacle -= otherRigidBody.velocity.magnitude;
+        return speedTowardsObstacle;
+    }
+    
+    /// <summary>
+    /// Get the closest position behind the obstacle in front of
+    /// us we can be according targetDistanceFromObstacle
+    /// </summary>
+    /// <returns></returns>
+    Vector3 GetBrakePosition()
+    {
+        Vector3 otherPos = _currentObstacle.gameObject.transform.position;
+        return otherPos + (transform.position - otherPos).normalized * targetDistanceFromObstacle;
     }
 }
