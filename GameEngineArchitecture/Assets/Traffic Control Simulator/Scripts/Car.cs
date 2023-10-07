@@ -30,14 +30,18 @@ public class Car : MonoBehaviour
     [SerializeField] float maxSpeed = 3f;
     [SerializeField] float targetDistanceFromObstacle = 2f;
     [SerializeField] float targetTimeFromObstacle = 2f;
-    [SerializeField] private bool isActive = true;
-    [SerializeField] private bool takeInput = false;
+    [SerializeField] bool isActive = true;
+    [SerializeField] bool takeInput = false;
+    [SerializeField] float reactionTime = 0.1f;
 
     private float _currentMotorTorque;
     private float _currentBrakeTorque;
     private float _currentTurnAngle;
     private Color _gizmoColor = Color.white;
     private float _targetDistanceToObstacle;
+    
+    private Vector3 _boxOverlapPosition = new Vector3(0, 2.13f, 7.85f);
+    private Vector3 _boxOverlapHalfSize = new Vector3(0.75f, 2.145f, 6.5f);
     
     private Obstacle _currentObstacle = new Obstacle(null);
 
@@ -46,22 +50,25 @@ public class Car : MonoBehaviour
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
+        
     }
     
     void Update()
     {
-        var coll = Physics.OverlapBox(transform.position + new Vector3(0, 2.13f, 5.4f), new Vector3(0.75f, 2.145f, 4.13f));
+        var coll = Physics.OverlapBox(transform.position + _boxOverlapPosition, _boxOverlapHalfSize);
         try
         {
             var other = coll[0];
             if (other.CompareTag("Car"))
             {
                 _currentObstacle = new Obstacle(other.gameObject);
-                print("ENTER");
+               // print("ENTER");
+               
             }
             else if (other.CompareTag("TrafficLight"))
             {
                 print("Seeing traffic light");
+                
             }
             else
             {
@@ -125,6 +132,7 @@ public class Car : MonoBehaviour
             
             float distanceToObstacle = Vector3.Distance(ourPos, otherPos);
             float targetDistanceInTime = distanceToObstacle / speedTowardsObstacle;
+            
                 
             float distanceToBrakePosition = Vector3.Distance(ourPos, otherPos);
             float timeUntilImpact = distanceToBrakePosition / speedTowardsObstacle;
@@ -141,19 +149,24 @@ public class Car : MonoBehaviour
                 if (speedTowardsObstacle >= 0)
                 {
                     _gizmoColor = Color.red;
-                    _currentBrakeTorque = maxBrakeTorque/*Mathf.Lerp(0, maxBrakeTorque, timeUntilImpact / targetTimeFromObstacle)*/;
+                    float c1 = Mathf.Clamp(timeUntilImpact / targetTimeFromObstacle, 0, 1);
+                    float c2 = Mathf.Clamp(Vector3.Distance(ourPos, otherPos) / targetDistanceFromObstacle, 0, 1);
+                    
+                    print(Mathf.Max(c1, c2));
+                    //print("C1: " + Mathf.Clamp(timeUntilImpact / targetTimeFromObstacle, 0, 1) + " C2: " + Mathf.Clamp(targetDistanceFromObstacle / Vector3.Distance(ourPos, otherPos), 0, 1));
+                    //_currentBrakeTorque = maxBrakeTorque/*Mathf.Lerp(0, maxBrakeTorque, timeUntilImpact / targetTimeFromObstacle)*/;
+                    _currentBrakeTorque = Mathf.Lerp(0, maxBrakeTorque, c2);
                     _currentMotorTorque = 0;
                 }
             }
-            
         }
         else
         {
             _gizmoColor = Color.white;
         }
         
-        Accelerate(_currentMotorTorque);
-        Brake(_currentBrakeTorque);
+        StartCoroutine(WaitAccelerate(_currentMotorTorque));
+        StartCoroutine(WaitBrake(_currentBrakeTorque));
     }
 
     /*private void OnTriggerEnter(Collider other)
@@ -188,10 +201,23 @@ public class Car : MonoBehaviour
         _currentObstacle = new Obstacle(null);
     }*/
 
+    IEnumerator WaitAccelerate(float torque)
+    {
+        yield return new WaitForSeconds(reactionTime);
+        Accelerate(torque);
+    }
+    
+    IEnumerator WaitBrake(float torque)
+    {
+        yield return new WaitForSeconds(reactionTime);
+        
+        Brake(torque);
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = _gizmoColor;
-        Gizmos.DrawWireCube(transform.position + new Vector3(0, 2.13f, 5.4f), new Vector3(0.75f*2, 2.145f*2, 4.13f*2));
+        Gizmos.DrawWireCube(transform.position + _boxOverlapPosition, _boxOverlapHalfSize * 2);
         //Gizmos.DrawSphere(_targetDistanceToObstacle, 0.5f);
     }
 
@@ -208,6 +234,7 @@ public class Car : MonoBehaviour
         rearRightWheel.brakeTorque = torque;
         rearLeftWheel.brakeTorque = torque;
         
+        _currentMotorTorque = 0;
         // Light up brake lights
     }
     
