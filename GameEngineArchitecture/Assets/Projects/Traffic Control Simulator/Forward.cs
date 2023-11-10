@@ -26,12 +26,15 @@ public class Forward : MonoBehaviour
     /// example when emergency braking.
     /// </summary>
     [SerializeField] private float maxBrakeAcceleration = 5f;
+
+    [SerializeField] private float comfyAccelerationThreshold = 3f;
     
     /// <summary>
     /// The velocity of the car in the last FixedUpdate.
     /// </summary>
     private Vector3 _lastVelocity;
     private bool shouldDecel = true;
+    private float _stillThreshold = 0.1f;
     
     // Start is called before the first frame update
     void Start()
@@ -56,20 +59,38 @@ public class Forward : MonoBehaviour
     {
         Vector3 F = Vector3.zero;
         
+        var targetRB = target.GetComponent<Rigidbody>();
+        if (targetRB)
+        {
+            if (targetRB.velocity.magnitude <= _stillThreshold)
+            {
+                // Calculate deceleration from our position to obstacle
+                F = GetTargetAcceleration();
+                // We don't have to brake yet, so adjust to speed limit
+                if (F.magnitude <= comfyAccelerationThreshold)
+                {
+                    // Adjust to speed limit
+                }
+                else // We have to brake
+                {
+                    rigidbody.AddForce(F, ForceMode.Acceleration);
+                }
+            }
+        }
+
         // Are we very close to the obstacle?
         if (Vector3.Distance(transform.position, target.transform.position) < minDistance)
         {
             // Max brake
             F = -rigidbody.velocity.normalized * maxBrakeAcceleration;
             rigidbody.AddForce(F, ForceMode.Acceleration);
+            return;
         }
-
-        if (shouldDecel)
-        {
-            // Decelerate, since we use ForceMode.Acceleration, we can just say F = a
-            F = GetTargetAcceleration();
-            rigidbody.AddForce(F, ForceMode.Acceleration);
-        }
+        
+        F = GetTargetAcceleration();
+        // Decelerate, since we use ForceMode.Acceleration, we can just say F = a
+        rigidbody.AddForce(F, ForceMode.Acceleration);
+        
         
         // We also need to know how far our brake distance is, take into account their braking distance as well!
 
@@ -118,7 +139,7 @@ public class Forward : MonoBehaviour
         // Gather required information for calculating acceleration
         Vector3 velocity = rigidbody.velocity;
         Vector3 oPos = transform.position; // Our
-        Vector3 tPos = target.transform.position;//GetFollowPosition(); // Target
+        Vector3 tPos = GetFollowPosition(); // Target
         float m = rigidbody.mass;
         
         // Calculate acceleration by using the kinematic equation for each vector component

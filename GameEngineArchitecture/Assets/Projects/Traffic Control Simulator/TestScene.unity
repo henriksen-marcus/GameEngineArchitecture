@@ -159,7 +159,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
@@ -222,7 +222,7 @@ Transform:
   m_GameObject: {fileID: 607116369}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 60.93, y: 1.92, z: 0}
+  m_LocalPosition: {x: 40, y: 1.92, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -684,6 +684,9 @@ MonoBehaviour:
   target: {fileID: 0}
   rigidbody: {fileID: 0}
   minDistance: 0.5
+  followDistance: 5
+  maxBrakeAcceleration: 10
+  comfyAccelerationThreshold: 3
 --- !u!1 &1732810255
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,7 +706,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1732810257
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -881,7 +884,10 @@ MonoBehaviour:
   wheelColl: {fileID: 0}
   target: {fileID: 607116369}
   rigidbody: {fileID: 2005512411}
-  minDistance: 0.5
+  minDistance: 3
+  followDistance: 5
+  maxBrakeAcceleration: 5
+  comfyAccelerationThreshold: 3
 --- !u!65 &2005512413
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -962,7 +968,7 @@ Transform:
   m_GameObject: {fileID: 2005512410}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 6.3, y: 1.92, z: 0}
+  m_LocalPosition: {x: 0, y: 1.92, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
