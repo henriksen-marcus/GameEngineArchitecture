@@ -50,6 +50,7 @@ public class ObjectPooler : MonoBehaviour
     {
         PooledObject obj = Instantiate(objectToPool);
         obj.pool = this;
+        obj.gameObject.SetActive(true);
         return obj;
     }
     
