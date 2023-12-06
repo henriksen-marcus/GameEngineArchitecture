@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class MovingCube : PooledObject
+public class MovingCube : PooledObject, IProduct
 {
-    void Start()
+    public string Name => "Moving Cube";
+    
+    public void Initialize()
     {
-        
+        print("Moving Cube Initialized");
     }
     
     void Update()
