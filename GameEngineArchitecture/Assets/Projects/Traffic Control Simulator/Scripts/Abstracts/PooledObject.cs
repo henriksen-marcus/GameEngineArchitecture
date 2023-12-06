@@ -5,5 +5,5 @@ using UnityEngine;
 public abstract class PooledObject : MonoBehaviour
 {
     public ObjectPooler pool;
-    public virtual void Release() => pool.ReturnToPool(this);
+    public virtual void Release() => pool?.ReturnToPool(this);
 }
