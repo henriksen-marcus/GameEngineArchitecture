@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// The light itself inside a traffic light pole. It's
@@ -6,19 +7,21 @@ using UnityEngine;
 /// </summary>
 public class TrafficLight : MonoBehaviour
 {
-    [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private Material onMaterial;
     [SerializeField] private Material offMaterial;
-    
-    private bool IsOn => meshRenderer.material == onMaterial;
+    private Renderer _renderer;
+    public bool isOn = false;
 
     public void Switch()
     {
-        meshRenderer.material = IsOn ? offMaterial : onMaterial;
+        _renderer.material = isOn ? offMaterial : onMaterial;
+        isOn = !isOn;
     }
     
-    void Start()
+    void Awake()
     {
-        meshRenderer ??= GetComponent<MeshRenderer>();        
+        _renderer = GetComponent<Renderer>();
+        if (_renderer) _renderer.material = offMaterial;
+        else Debug.LogError($"{gameObject.name}: Missing mesh renderer!");
     }
 }
