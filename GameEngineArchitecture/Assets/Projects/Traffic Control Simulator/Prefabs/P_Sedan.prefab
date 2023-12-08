@@ -137,8 +137,12 @@ GameObject:
   - component: {fileID: 4449056622443793616}
   - component: {fileID: 1242958218790786704}
   - component: {fileID: 8098997464620974113}
+  - component: {fileID: 3012417488602846131}
   - component: {fileID: 3853244127857177257}
   - component: {fileID: 6369923715558849564}
+  - component: {fileID: 9082079229593143640}
+  - component: {fileID: 3355266238431637606}
+  - component: {fileID: 8213678872843845206}
   m_Layer: 0
   m_Name: P_Sedan
   m_TagString: Car
@@ -243,6 +247,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4999999, y: 1.0999999, z: 2.4499998}
   m_Center: {x: 0, y: 0.54999995, z: -0.024999976}
+--- !u!65 &3012417488602846131
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2591411824941818778}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.4999999, y: 1.0999999, z: 15}
+  m_Center: {x: 0, y: 0.54999995, z: 8.79}
 --- !u!54 &3853244127857177257
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -254,7 +279,7 @@ Rigidbody:
   m_Mass: 500
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: 0.1, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -263,7 +288,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -282,20 +307,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fbc1009b66342544acea53febd3f318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pool: {fileID: 0}
+  maxMotorTorque: 500
+  maxBrakeTorque: 500
+  maxTurnAngle: 10
+  targetDistanceFromObstacle: 2
+  targetTimeFromObstacle: 2
+  maxSpeed: 5
+  comfortableAcceleration: 0.5
   frontLeftWheel: {fileID: 5902355461082883421}
   frontRightWheel: {fileID: 7104796043791248374}
   rearLeftWheel: {fileID: 188991973300299757}
   rearRightWheel: {fileID: 2218973225513131432}
-  visionCollider: {fileID: 0}
-  maxMotorTorque: 500
-  maxBrakeTorque: 500
-  maxTurnAngle: 10
-  maxSpeed: 5
-  targetDistanceFromObstacle: 2
-  targetTimeFromObstacle: 2
-  isActive: 1
-  takeInput: 0
-  rigidBody: {fileID: 0}
+--- !u!114 &9082079229593143640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2591411824941818778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8527ec541d880948968fd7543b05efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visionCollider: {fileID: 3012417488602846131}
+--- !u!114 &3355266238431637606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2591411824941818778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff40e233d1f34f045b9dda77e5b06a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: []
+  arriveDistance: 0.3
+  lastPointArriveDistance: 0.3
+  turningAngleOffset: 5
+  currentTargetPosition: {x: 0, y: 0, z: 0}
+  <OnDrive>k__BackingField:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6369923715558849564}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &8213678872843845206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2591411824941818778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee0081319c3565440b69d5ef5f969e84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5938488880408602339
 GameObject:
   m_ObjectHideFlags: 0
@@ -434,7 +514,7 @@ GameObject:
   - component: {fileID: 138816530633863050}
   - component: {fileID: 188991973300299757}
   m_Layer: 0
-  m_Name: wheel_backLeft
+  m_Name: wheel_rearLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -559,7 +639,7 @@ GameObject:
   - component: {fileID: 4423909412347258651}
   - component: {fileID: 2218973225513131432}
   m_Layer: 0
-  m_Name: wheel_backRight
+  m_Name: wheel_rearRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
