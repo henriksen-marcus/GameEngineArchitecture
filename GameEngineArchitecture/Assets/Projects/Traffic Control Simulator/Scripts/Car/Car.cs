@@ -4,53 +4,46 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Transactions;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(
     typeof(Rigidbody), 
     typeof(WheelController),
     typeof(CarVision))]
-[RequireComponent(
-    typeof(BoxCollider), // Collision collider
-    typeof(BoxCollider), // Vision collider
-    typeof(CarAI))]
 public class Car : PooledObject, IVehicle, IObstacle
 {
+    [FormerlySerializedAs("maxMotorTorque")]
     [Header("Car Settings")]
-    [SerializeField] float maxMotorTorque = 500f;
-    [SerializeField] float maxBrakeTorque = 500f;
+    [SerializeField] float maxAcceleration = 1f;
     [SerializeField] float maxTurnAngle = 10f;
     [SerializeField] float targetDistanceFromObstacle = 2f;
     [SerializeField] float targetTimeFromObstacle = 2f;
     //[SerializeField] bool takeInput = false;
     //[SerializeField] float reactionTime = 0.1f;
     [SerializeField] float maxSpeed = 3f;
+    [SerializeField] private BoxCollider boxCollider;
 
     /// How fast we should accelerate/brake when not emergency braking
     [SerializeField] float comfortableAcceleration = 0.5f;
     
-    private CarVision _carVision;
     private Obstacle CurrentObstacle => _carVision.CurrentObstacle;
+    
+    // Component references
+    private CarVision _carVision;
     private WheelController _wheelController;
-    
-    // TODO: Check
-    private float MaxDeceleration => maxBrakeTorque / Rigidbody.mass;
-    
-    [Header("Wheel Colliders")]
-    // Properties are not settable in the inspector
-    [SerializeField] public WheelCollider frontLeftWheel;
-    [SerializeField] public WheelCollider frontRightWheel;
-    [SerializeField] public WheelCollider rearLeftWheel;
-    [SerializeField] public WheelCollider rearRightWheel;
+    private WheelCollider _frontLeftWheel;
+    private WheelCollider _frontRightWheel;
+    private WheelCollider _rearLeftWheel;
+    private WheelCollider _rearRightWheel;
     
     // Interface implementations
     public Rigidbody Rigidbody { get; set; }
     public BoxCollider Collider { get; private set; }
     public Vector3 GetBootPosition() => transform.position - transform.forward * Collider.size.z / 2;
     public Vector3 GetHoodPosition() => transform.position + transform.forward * Collider.size.z / 2;
-
-    private float _currentMotorTorque;
-    private float _currentBrakeTorque;
+    
     private float _currentTurnAngle;
+    private float _totalMass;
     private Color _gizmoColor = Color.white;
 
     void Start()
@@ -59,67 +52,14 @@ public class Car : PooledObject, IVehicle, IObstacle
         Collider = GetComponent<BoxCollider>();
         _carVision = GetComponent<CarVision>();
         _wheelController = GetComponent<WheelController>();
-        frontLeftWheel.brakeTorque = 0;
-        frontRightWheel.brakeTorque = 0;
-        rearLeftWheel.brakeTorque = 0;
-        rearRightWheel.brakeTorque = 0;
+        
+        _totalMass = Rigidbody.mass + _frontLeftWheel.mass + _frontRightWheel.mass + _rearLeftWheel.mass + _rearRightWheel.mass;
     }
     
     void Update()
     {
-        /*var coll = Physics.OverlapBox(transform.position + _boxOverlapPosition, _boxOverlapHalfSize);
-        try
-        {
-            var other = coll[0];
-            if (other.CompareTag("Car"))
-            {
-                _currentObstacle = new Obstacle(other.gameObject);
-               // print("ENTER");
-            }
-            else if (other.CompareTag("TrafficLight"))
-            {
-                print("Seeing traffic light");
-            }
-            else
-            {
-                _currentObstacle = new Obstacle(null);
-            }
-        }
-        catch
-        {
-            _currentObstacle = new Obstacle(null);
-        }
-
-        if (takeInput) PlayerMove();
-        else if (isActive) Move();*/
-        if (Input.GetKey(KeyCode.Space))
-        {
-            print("Force");
-            Rigidbody.AddForce(transform.forward * 2000f);
-        }
-    }
-    
-    private void PlayerMove()
-    {
-        return;
-        _currentMotorTorque = Input.GetAxisRaw("Vertical") * maxMotorTorque;
-        if (Rigidbody.velocity.magnitude > maxSpeed) _currentMotorTorque = 0;
-
-        if (Input.GetKey(KeyCode.LeftControl))
-        {
-            _currentBrakeTorque = maxBrakeTorque;
-        }
-        else
-        {
-            _currentBrakeTorque = 0;
-        }
-        
-        _wheelController.Accelerate(_currentMotorTorque);
-        _wheelController.Brake(_currentBrakeTorque);
-        
-        _currentTurnAngle = maxTurnAngle * Input.GetAxisRaw("Horizontal");
-        frontLeftWheel.steerAngle = _currentTurnAngle;
-        frontRightWheel.steerAngle = _currentTurnAngle;
+        // Move car
+        Rigidbody.AddForce(transform.forward * (GetTargetAcceleration() * _totalMass), ForceMode.Force);
     }
 
     private void FixedUpdate()
@@ -129,9 +69,10 @@ public class Car : PooledObject, IVehicle, IObstacle
 
     private float ForceToTorque(float force)
     {
-        return force * frontRightWheel.radius;
+        return force * _frontRightWheel.radius;
     }
     
+    /// <returns>The accurate distance between this object and obstacle.</returns>
     float GetDistanceToObstacle(GameObject obstacle)
     {
         switch (obstacle.tag)
@@ -147,108 +88,114 @@ public class Car : PooledObject, IVehicle, IObstacle
 
     private float GetTargetAcceleration()
     {
-        float speedTowardsObstacle = GetSpeedTowardsObstacle();
-        float distanceToObstacle = GetDistanceToObstacle(CurrentObstacle.gameObject);
-        float distanceToBrakePosition = distanceToObstacle - targetDistanceFromObstacle;
-        float timeUntilImpact = distanceToBrakePosition / speedTowardsObstacle;
-        
-        // 1. Is there an obstacle ahead?
-        if (CurrentObstacle.gameObject != null)
+        float AdjustToSpeedLimit()
         {
-            // Yes
-            _gizmoColor = Color.yellow;
-            // 2. Are we very close to the obstacle, less than targetDistanceFromObstacle?
-            if (distanceToObstacle <= targetDistanceFromObstacle)
-            {
-                // Yes
-                
-            }
-            else
-            {
-                // No
-                
-                // Accelerate
-                _gizmoColor = Color.green;
-                _currentMotorTorque = maxMotorTorque;
-                _currentBrakeTorque = 0;
-            }
-            
-            // 3. Are we going to hit it in less than targetTimeFromObstacle?
-            _gizmoColor = Color.white;
-            float targetSpeed = CurrentObstacle.rigidBody ? CurrentObstacle.rigidBody.velocity.magnitude : 0;
-            float speedDifference = targetSpeed - Rigidbody.velocity.magnitude;
-            // Find acceleration/deceleration
-        }
-        else
-        {
-            // No
+            _gizmoColor = Color.green;
             float targetSpeed = GetSpeedLimit();
             float speedDifference = targetSpeed - Rigidbody.velocity.magnitude;
             if (Mathf.Abs(speedDifference) < 1f) return 0f; // Avoid jittering
             return speedDifference > 0 ? comfortableAcceleration : -comfortableAcceleration;
         }
+        
+        float speedTowardsObstacle = GetSpeedTowardsObstacle();
+        float distanceToObstacle = GetDistanceToObstacle(CurrentObstacle.gameObject);
+        float distanceToBrakePosition = distanceToObstacle - targetDistanceFromObstacle;
+        float timeUntilImpact = distanceToBrakePosition / speedTowardsObstacle;
+        
+        // Is there an obstacle ahead?
+        if (CurrentObstacle.gameObject != null)
+        {
+            // Yes
+            _gizmoColor = Color.yellow;
+            // Are we very close to the obstacle, less than targetDistanceFromObstacle?
+            if (distanceToObstacle < targetDistanceFromObstacle)
+            {
+                // Yes
+                return(-maxAcceleration);
+            }
 
-        return 0;
+            // No ----------------------------------------?
+            
+            // Are we going to hit it in less than targetTimeFromObstacle?
+            if (timeUntilImpact < targetTimeFromObstacle)
+            {
+                // Yes
+                // We have to brake a little
+                _gizmoColor = Color.red;
+                return (-comfortableAcceleration);
+            } 
+            
+            // No
+            // Calculate deceleration from our position to obstacle
+            float requiredAcceleration = CalculateAccelerationTo(CurrentObstacle);
+            
+            // Is accel below the threshold for comfortable acceleration?
+            if (Mathf.Abs(requiredAcceleration) < comfortableAcceleration)
+            {
+                // Yes
+                // We don't have to brake yet, so adjust to speed limit
+                return AdjustToSpeedLimit();
+            }
+            
+            // No
+            // We have to brake
+            _gizmoColor = Color.red;
+            return requiredAcceleration;
+        }
+ 
+        // No
+        // Find speed limit and adjust to it
+        return AdjustToSpeedLimit();
+    }
+    
+    private float CalculateAccelerationTo(Obstacle obstacle)
+    {
+        // Gather required information for calculating acceleration
+        //Vector3 velocity = Rigidbody.velocity;
+        Vector3 oPos = transform.position; // Our
+        Vector3 tPos = obstacle.gameObject.transform.position; // Target
+        float m = _totalMass;
+        
+        float oVelocity = Rigidbody.velocity.magnitude;
+        float tVelocity = obstacle.rigidBody ? obstacle.rigidBody.velocity.magnitude : 0;
+        
+        // Calculate acceleration by using the kinematic equation for each vector component
+        
+        // We only really need the one-dimensional acceleration because we only accelerate in the forward direction anyways
+        float v_0 = oVelocity; // Starting speed
+        float v = tVelocity; // Target speed
+        float s = MathF.Abs(oPos.x - tPos.x); // Distance to target
+        float a = s == 0f ? 0f : (v * v - v_0 * v_0) / (2 * s); // Acceleration needed to reach target speed within s
+        
+        /*float v_0_x = velocity.x; // Starting speed
+        float v_x = 0; // Target speed
+        float s_x = MathF.Abs(oPos.x - tPos.x); // Distance to target
+        float a_x = s_x == 0f ? 0f : (v_x * v_x - v_0_x * v_0_x) / (2 * s_x); // Acceleration needed to reach target speed within s
+        
+        float v_0_y = velocity.y;
+        float v_y = 0;
+        float s_y = MathF.Abs(oPos.y - tPos.y);
+        float a_y = s_y == 0f ? 0f : (v_y * v_y - v_0_y * v_0_y) / (2 * s_y);
+        
+        float v_0_z = velocity.z;
+        float v_z = 0;
+        float s_z = MathF.Abs(oPos.z - tPos.z);
+        float a_z = s_z == 0f ? 0f : (v_z * v_z - v_0_z * v_0_z) / (2 * s_z);*/
+        
+        // The target acceleration needed to each the target position and speed
+        //Vector3 a = new Vector3(a_x, a_y, a_z);
+        
+        /*print("v_x: " + v_x + " v_0_x: " + v_0_x + " s_x: " + s_x + " a_x: " + a_x);
+        print("v_y: " + v_y + " v_0_y: " + v_0_y + " s_y: " + s_y + " a_y: " + a_y);
+        print("v_z: " + v_z + " v_0_z: " + v_0_z + " s_z: " + s_z + " a_z: " + a_z);
+        print(a);*/
+        
+        //return a.magnitude;
+        return a;
     }
     
     private float GetSpeedLimit() => maxSpeed; 
-
-    public void Move(Vector2 direction)
-    {
-        _currentMotorTorque = maxMotorTorque;
-        _currentBrakeTorque = 0;
-        
-        if (CurrentObstacle.gameObject != null)
-        {
-            _gizmoColor = Color.yellow;
-            
-            Vector3 ourPos = transform.position;
-            Vector3 otherPos = CurrentObstacle.gameObject.transform.position;
-            
-            float speedTowardsObstacle = GetSpeedTowardsObstacle();
-            float distanceToObstacle = GetDistanceToObstacle(CurrentObstacle.gameObject);
-            float distanceToBrakePosition = distanceToObstacle - targetDistanceFromObstacle;
-            float timeUntilImpact = distanceToBrakePosition / speedTowardsObstacle;
-
-            // Brake if:
-            // 1. We are closer than the minimum distance, aka targetDistanceFromObstacle
-            // 2. We are going to hit the obstacle in less than targetTimeFromObstacle
-
-            if (distanceToObstacle <= targetDistanceFromObstacle)
-            {
-                if (speedTowardsObstacle >= 0) // Brake
-                {
-                    _gizmoColor = Color.red;
-                    //float brakeCoefficient = Mathf.Clamp(Vector3.Distance(ourPos, otherPos) / targetDistanceFromObstacle, 0, 1);
-                    Rigidbody.velocity = Vector3.zero;
-                }
-                else // Accelerate
-                {
-                    _gizmoColor = Color.green;
-                    _currentMotorTorque = maxMotorTorque;
-                    _currentBrakeTorque = 0;
-                }
-            }
-            else if (timeUntilImpact <= targetTimeFromObstacle)
-            {
-                // Brake based on the distance and time until impact
-                _gizmoColor = Color.red;
-                //float brakeCoefficient = Mathf.Clamp(1 - (timeUntilImpact / targetTimeFromObstacle), 0f, 1f);
-                //_carMovement.Brake(maxBrakeTorque * brakeCoefficient);
-            }
-            
-            
-        }
-        else
-        {
-            _gizmoColor = Color.white;
-        }
-        
-        /*StartCoroutine(WaitAccelerate(_currentMotorTorque));
-        StartCoroutine(WaitBrake(_currentBrakeTorque));*/
-    }
     
-
     /*IEnumerator WaitAccelerate(float torque)
     {
         yield return new WaitForSeconds(reactionTime);
@@ -265,7 +212,7 @@ public class Car : PooledObject, IVehicle, IObstacle
     private void OnDrawGizmos()
     {
         Gizmos.color = _gizmoColor;
-        //Gizmos.DrawWireCube(transform.position + _boxOverlapPosition, _boxOverlapHalfSize * 2);
+        Gizmos.DrawWireCube(transform.position, boxCollider.size);
         //Gizmos.DrawSphere(_targetDistanceToObstacle, 0.5f);
         //Gizmos.color = Color.magenta;
         //Gizmos.DrawRay(GetComponent<Rigidbody>().centerOfMass, Vector3.up * 5f);
@@ -279,8 +226,8 @@ public class Car : PooledObject, IVehicle, IObstacle
     float GetSpeedTowardsObstacle()
     {
         float speedTowardsObstacle = Rigidbody.velocity.magnitude;
-        var otherRigidBody = _carVision.CurrentObstacle.rigidBody;
-        if (otherRigidBody) speedTowardsObstacle -= otherRigidBody.velocity.magnitude;
+        var otherRigidBody = CurrentObstacle.rigidBody;
+        if (otherRigidBody != null) speedTowardsObstacle -= otherRigidBody.velocity.magnitude;
         return speedTowardsObstacle;
     }
     
