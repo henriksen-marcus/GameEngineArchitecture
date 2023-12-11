@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+/// <summary>
+/// [DEPRECATED] Test script for calculating and applying acceleration in 3D space.
+/// </summary>
+[System.Obsolete("Use Car instead.")]
 public class Forward : MonoBehaviour
 {
     
