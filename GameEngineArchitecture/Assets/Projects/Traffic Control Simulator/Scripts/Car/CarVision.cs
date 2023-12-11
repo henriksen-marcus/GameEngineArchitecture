@@ -49,6 +49,9 @@ public class CarVision : MonoBehaviour
             case "TrafficLight":
                 TrySetObstacle<TrafficLightPole>(other);
                 break;
+            default:
+                CurrentObstacle = new Obstacle(other.gameObject);
+                break;
         }
     }
     
