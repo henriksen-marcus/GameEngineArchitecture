@@ -1,6 +1,8 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
+/// <summary>
+/// Gizmo component that draws a direction in the editor.
+/// </summary>
 public class ArrowComponent : MonoBehaviour
 {
     public Vector3 direction = Vector3.up;
