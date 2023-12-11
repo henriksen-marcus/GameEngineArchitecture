@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8912772565912508465}
   - component: {fileID: 3391582943834068647}
   - component: {fileID: 7964323626461076738}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RedLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 2082971838945181693}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1.933, z: -0.219}
+  m_LocalPosition: {x: 0, y: 3.9329998, z: -0.219}
   m_LocalScale: {x: 0.35, y: 0.11, z: 0.35}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -96,9 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 453b686fcaee44841ad7c06b609e7e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshRenderer: {fileID: 3391582943834068647}
   onMaterial: {fileID: 2100000, guid: a6bfa45c4975a724cad380183207977a, type: 2}
   offMaterial: {fileID: 2100000, guid: c27f652066e9bcb428e2d2b5932f2a14, type: 2}
+  isOn: 0
 --- !u!1 &3277147297969852900
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 3202988465939722326}
   - component: {fileID: 6855598863910277161}
   - component: {fileID: 3160565415938953389}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LightHousing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,12 +191,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6949858435164564061}
-  - component: {fileID: 8066220544057531586}
   - component: {fileID: 7490828842610677883}
+  - component: {fileID: 8066220544057531586}
   - component: {fileID: 8768163715852415236}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TrafficLight
-  m_TagString: Untagged
+  m_TagString: TrafficLight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -219,27 +219,6 @@ Transform:
   - {fileID: 3646387123435375298}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &8066220544057531586
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6545096458475032977}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 4
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 4.23, y: 4, z: 1}
-  m_Center: {x: -1.75, y: 0, z: 0}
 --- !u!136 &7490828842610677883
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -262,7 +241,28 @@ CapsuleCollider:
   m_Radius: 0.5
   m_Height: 4.94
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1.93, z: 0}
+--- !u!65 &8066220544057531586
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6545096458475032977}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.23, y: 4, z: 1}
+  m_Center: {x: -1.75, y: 2, z: 0}
 --- !u!114 &8768163715852415236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 4677420388289811303}
   - component: {fileID: 4890243680796314260}
   - component: {fileID: 453642606521130542}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GreenLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +308,7 @@ Transform:
   m_GameObject: {fileID: 7141237163070947668}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1.485, z: -0.219}
+  m_LocalPosition: {x: 0, y: 3.485, z: -0.219}
   m_LocalScale: {x: 0.35, y: 0.11, z: 0.35}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -376,9 +376,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 453b686fcaee44841ad7c06b609e7e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshRenderer: {fileID: 4890243680796314260}
   onMaterial: {fileID: 2100000, guid: 214f806da2ad296459f59a75d8266dfe, type: 2}
   offMaterial: {fileID: 2100000, guid: c27f652066e9bcb428e2d2b5932f2a14, type: 2}
+  isOn: 0
 --- !u!1 &8915761399516730433
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +390,7 @@ GameObject:
   - component: {fileID: 5146088616636639572}
   - component: {fileID: 5438462213758266915}
   - component: {fileID: 2641858904714353957}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Pole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -406,7 +406,7 @@ Transform:
   m_GameObject: {fileID: 8915761399516730433}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 0.5, y: 2, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
