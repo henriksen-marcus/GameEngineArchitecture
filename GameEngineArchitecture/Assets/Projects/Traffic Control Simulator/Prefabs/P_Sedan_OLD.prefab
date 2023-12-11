@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 3355266238431637606}
   - component: {fileID: 8213678872843845206}
   m_Layer: 0
-  m_Name: P_Sedan
+  m_Name: P_Sedan_OLD
   m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
