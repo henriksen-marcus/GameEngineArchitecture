@@ -11,15 +11,29 @@ public class RoadSegment : MonoBehaviour
 
     public Vector3 GetMarker(Vector3 forward)
     {
-        if (Vector3.Dot(Vector3.forward, transform.forward) > 0)
+        if (Vector3.Dot(forward, transform.forward) > 0)
         {
-            // Going in our direction, give exit points
+            // Going in our direction
             return exitRightMarker.position;
         }
         else
         {
-            // Going in opposite direction, give entry points
+            // Going in opposite direction
             return exitLeftMarker.position;
+        }
+    }
+
+    public Vector3 GetInfinityMarker(Vector3 forward)
+    {
+        if (Vector3.Dot(forward, transform.forward) > 0)
+        {
+            // Going in our direction
+            return exitRightMarker.position + transform.forward * 100000f;
+        }
+        else
+        {
+            // Going in opposite direction
+            return exitLeftMarker.position - transform.forward * 100000f;
         }
     }
     
