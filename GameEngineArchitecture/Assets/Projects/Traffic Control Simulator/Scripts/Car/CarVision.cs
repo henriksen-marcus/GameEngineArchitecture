@@ -16,7 +16,6 @@ public class CarVision : MonoBehaviour
     [SerializeField] private Vector3 visionOffset = Vector3.zero;
     [SerializeField] private LayerMask obstacleLayerMask;
     public Obstacle CurrentObstacle { get; private set; }
-    private Vector3 lastpos;
 
     void Awake()
     {
@@ -25,6 +24,7 @@ public class CarVision : MonoBehaviour
 
     void Update()
     {
+        // Check for obstacles
         var t = transform;
         var ray = new Ray(t.position + visionOffset, t.forward);
         var hit = Physics.Raycast(ray, out var hitInfo, visionDistance, LayerMask.GetMask("Obstacle"));
@@ -32,11 +32,10 @@ public class CarVision : MonoBehaviour
         if (!hit)
         {
             CurrentObstacle = new Obstacle(null, Vector3.zero);
-            print("Reset obstacle");
+            //print("Reset obstacle");
             return;
         }
         
-        lastpos = hitInfo.point;
         var other = hitInfo.collider;
         if (other.gameObject == gameObject) return;
         
@@ -67,15 +66,20 @@ public class CarVision : MonoBehaviour
     
     void TrySetObstacle<T>(Collider other, Vector3 hitPos = new()) where T : MonoBehaviour, IObstacle
     {
-        
-        // Check if the other collider is a car
         if (other.TryGetComponent(out T component))
         {
-            print("Set obstacle: " + component.gameObject.name);
+            //print("Set obstacle: " + component.gameObject.name);
             CurrentObstacle = new Obstacle(component.gameObject, hitPos);
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("ExitPoint")) 
+            GetComponent<Car>().Release();
+    }
+
+    // Draw vision debug lines
     void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
