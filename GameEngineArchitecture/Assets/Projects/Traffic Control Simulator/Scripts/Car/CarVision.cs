@@ -15,10 +15,14 @@ public class CarVision : MonoBehaviour
     [SerializeField] private float visionDistance = 50f;
     [SerializeField] private Vector3 visionOffset = Vector3.zero;
     [SerializeField] private LayerMask obstacleLayerMask;
-    public Obstacle CurrentObstacle { get; private set; }
+    [SerializeField] private bool goStraightAfterNoRoad = true;
+    private Car _car;
+    private List<string> _roadSegmentList = new();
+    public Obstacle CurrentObstacle { get; set; }
 
     void Awake()
     {
+        _car = GetComponent<Car>();
         CurrentObstacle = new Obstacle(null, Vector3.zero);
     }
 
@@ -75,8 +79,38 @@ public class CarVision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("ExitPoint")) 
-            GetComponent<Car>().Release();
+        switch (other.tag)
+        {
+            case "RoadSegment":
+                var segment = other.GetComponent<RoadSegment>();
+                if (segment && _car)
+                {
+                    _car.TargetPosition = segment.GetMarker(transform.forward);
+                    _roadSegmentList.Add(other.name);
+                }
+                break;
+            case "ExitPoint":
+                if (_car) _car.Release();
+                else Destroy(gameObject);
+                break;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("RoadSegment"))
+        {
+            if (_roadSegmentList.Contains(other.name))
+            {
+                _roadSegmentList.Remove(other.name);
+                if (_roadSegmentList.Count == 0)
+                {
+                    var segment = other.GetComponent<RoadSegment>();
+                    if (segment && _car)
+                     _car.TargetPosition = goStraightAfterNoRoad ? segment.GetInfinityMarker(transform.forward) : Vector3.zero;
+                }
+            }
+        }
     }
 
     // Draw vision debug lines
