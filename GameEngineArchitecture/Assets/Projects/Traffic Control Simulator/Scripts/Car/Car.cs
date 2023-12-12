@@ -38,6 +38,7 @@ public class Car : PooledObject, IVehicle, IObstacle
     private WheelCollider _rearRightWheel;
     
     private Obstacle CurrentObstacle => _carVision.CurrentObstacle;
+    public Vector3 TargetPosition { get; set; }
     
     // Interface implementations
     public Rigidbody Rigidbody { get; private set; }
@@ -78,15 +79,19 @@ public class Car : PooledObject, IVehicle, IObstacle
         // Move car
         float accel = Mathf.Clamp(GetTargetAcceleration(), -maxAcceleration, maxAcceleration);
         
-        // No backwards acceleration when standing still
-        if (Vector3.Dot(transform.forward, Rigidbody.velocity) < 0 && Rigidbody.velocity.magnitude <= 1f)
-        {
-            Rigidbody.velocity = Vector3.zero;
-        }
-        
         Rigidbody.AddForce(transform.forward * (accel * _totalMass), ForceMode.Force);
-        print("Accel: "+accel);
-        print("Speed: " + Rigidbody.velocity.magnitude);
+        //print("Accel: "+accel);
+        //print("Speed: " + Rigidbody.velocity.magnitude);
+        
+        if (TargetPosition != Vector3.zero && Vector3.Distance(transform.position, TargetPosition) > 1f)
+        {
+            SteerToPosition(TargetPosition);
+        }
+        else
+        {
+            _frontLeftWheel.steerAngle = 0;
+            _frontRightWheel.steerAngle = 0;
+        }
     }
 
     private void LateUpdate()
@@ -95,6 +100,17 @@ public class Car : PooledObject, IVehicle, IObstacle
         {
             Rigidbody.velocity = Vector3.zero;
         }
+    }
+
+    public override void Release()
+    {
+        // Reset values
+        _currentTurnAngle = 0f;
+        _mustStopForLight = false;
+        _gizmoColor = Color.white;
+        TargetPosition = Vector3.zero;
+        _carVision.CurrentObstacle = new Obstacle(null, Vector3.zero);
+        base.Release();
     }
 
     float GetMaxBrake()
@@ -273,6 +289,9 @@ public class Car : PooledObject, IVehicle, IObstacle
         // Status indicator
         Gizmos.color = _gizmoColor;
         Gizmos.DrawWireSphere(transform.position + new Vector3(0, 2, 0), 0.3f);
+        Vector3 direction = Quaternion.Euler(0, _currentTurnAngle, 0) * transform.forward;
+        Gizmos.DrawRay(_frontLeftWheel.transform.position, direction * 3f);
+        Gizmos.DrawRay(_frontRightWheel.transform.position, direction * 3f);
     }
 
     float GetSpeedTowardsObstacle()
@@ -281,5 +300,24 @@ public class Car : PooledObject, IVehicle, IObstacle
         var otherRigidBody = CurrentObstacle.rigidBody;
         if (otherRigidBody != null) speedTowardsObstacle -= otherRigidBody.velocity.magnitude;
         return speedTowardsObstacle;
+    }
+    
+    public void SteerToPosition(Vector3 targetPosition)
+    {
+        Vector3 targetDirection = targetPosition - transform.position;
+        targetDirection.Normalize();
+
+        // Calculate the angle between the car's forward direction and the target direction
+        float angle = Vector3.SignedAngle(transform.forward, targetDirection, Vector3.up);
+        float steeringAngle = Mathf.Clamp(angle * maxTurnAngle / 90f, -maxTurnAngle, maxTurnAngle);
+        
+        _frontLeftWheel.steerAngle = steeringAngle;
+        _frontRightWheel.steerAngle = steeringAngle;
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Car")) GetComponent<AudioSource>()?.Play();
+        Destroy(gameObject, 3);
     }
 }
