@@ -14,6 +14,9 @@ public class ObjectPooler : MonoBehaviour
     protected readonly Stack<PooledObject> Stack = new Stack<PooledObject>();
     //ObjectPool<PooledObject> pool;
     
+    public uint PoolSize => poolSize;
+    public int RemainingObjects => Stack.Count;
+
     protected virtual void Start()
     {
         if (setupOnStart) SetupPool();
