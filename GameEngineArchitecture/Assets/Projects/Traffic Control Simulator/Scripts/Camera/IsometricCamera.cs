@@ -27,7 +27,7 @@ public class IsometricCamera : MonoBehaviour
     }
 
 
-    void Update()
+    /*void Update()
     {
         var t = transform;
         if (Input.GetKey(moveForwardKey)) t.position += _forward * speed;
@@ -42,5 +42,5 @@ public class IsometricCamera : MonoBehaviour
         //Physics.Raycast(transform.position, transform.forward, out var hit, 1000f);
         
         //print(hit.distance);
-    }
+    }*/
 }
