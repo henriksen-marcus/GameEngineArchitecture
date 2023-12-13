@@ -18,7 +18,7 @@ public class TrafficControllerUI : MonoBehaviour
     {
         greenTimeInput.GetComponent<TMP_InputField>().text = trafficLightController.GreenTime.ToString(CultureInfo.InvariantCulture);
         redTimeInput.GetComponent<TMP_InputField>().text = trafficLightController.RedTime.ToString(CultureInfo.InvariantCulture);
-        print("GreenTime: " +trafficLightController.GreenTime);
+        //("GreenTime: " +trafficLightController.GreenTime);
     }
 
     public void Save()
