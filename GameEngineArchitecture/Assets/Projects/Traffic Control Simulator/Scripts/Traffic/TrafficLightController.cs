@@ -1,18 +1,41 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Controller for a group of traffic lights in a crossing.
-/// Subdivides four traffic lights into four directions.
 /// Opposite directions switch simultaneously.
 /// </summary>
-[RequireComponent(typeof(ArrowComponent))]
-public class TrafficLightController : MonoBehaviour
+public class TrafficLightController : MonoBehaviour, IClickable
 {
-    /* Directions according to the arrow component. */
-    [SerializeField] private GameObject _frontTrafficPole;
-    [SerializeField] private GameObject _backTrafficPole;
-    [SerializeField] private GameObject _rightTrafficPole;
-    [SerializeField] private GameObject _leftTrafficPole;
+    [SerializeField] private TrafficLightPole[] trafficLights;
+    [SerializeField] private GameObject trafficControllerUI;
+
+    public float GreenTime  = 5;
+    public float RedTime = 5;
+    
+    public event Action<float, float> RuleUpdateEvent;
+
+    private void Start()
+    {
+        PushRuleChanges();
+    }
+
+    protected virtual void OnRuleUpdateEvent(float greenTime, float redTime)
+    {
+        RuleUpdateEvent?.Invoke(greenTime, redTime);
+    }
+    
+    public void OnClicked()
+    {
+        // This should be reworked later
+        trafficControllerUI.GetComponentInChildren<TrafficControllerUI>().trafficLightController = this;
+        trafficControllerUI.SetActive(true);
+    }
+
+    public void PushRuleChanges()
+    {
+        OnRuleUpdateEvent(Mathf.Clamp(GreenTime, 1, 50), Mathf.Clamp(RedTime, 1, 50));
+    }
 }

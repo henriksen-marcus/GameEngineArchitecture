@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.EventSystems;
 
-public class TrafficLightPole : MonoBehaviour, IClickable, IObstacle
+public class TrafficLightPole : MonoBehaviour, IClickable, IObstacle, IPointerClickHandler
 {
+    [SerializeField] private TrafficLightController _trafficLightController;
     [SerializeField] private float greenTime = 5f;
     [SerializeField] private float redTime = 5f;
     [SerializeField] private GameObject redLight;
@@ -27,17 +29,17 @@ public class TrafficLightPole : MonoBehaviour, IClickable, IObstacle
     
     private void Awake()
     {
-        TrafficLightManager.Instance.RuleUpdateEvent += HandleRuleChange;
+        
     }
     
     public void OnClicked()
     {
-        // Spawn UI
-        Debug.Log("Traffic light clicked!");
+        _trafficLightController.OnClicked();
     }
     
     void Start()
     {
+        if (_trafficLightController) _trafficLightController.RuleUpdateEvent += HandleRuleChange;
         _redLight = redLight.GetComponent<TrafficLight>();
         _greenLight = greenLight.GetComponent<TrafficLight>();
         
@@ -89,5 +91,11 @@ public class TrafficLightPole : MonoBehaviour, IClickable, IObstacle
     {
         this.greenTime = _greenTime;
         this.redTime = _redTime;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (_trafficLightController) _trafficLightController.OnClicked();
+        else Debug.LogError("TrafficLightPole: Missing traffic light controller!");
     }
 }
