@@ -1,11 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Transactions;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(
     typeof(Rigidbody), 
@@ -17,8 +13,8 @@ public class Car : PooledObject, IVehicle, IObstacle
     [SerializeField] float maxTurnAngle = 10f;
     [SerializeField] float targetDistanceFromObstacle = 3f;
     [SerializeField] float targetTimeFromObstacle = 3f;
-    //[SerializeField] float reactionTime = 0.1f;
     [SerializeField] float maxSpeed = 10f;
+    //[SerializeField] float reactionTime = 0.1f; // Future implementation
 
     /// How fast we should accelerate/brake when not emergency braking
     [SerializeField] float comfortableAcceleration = 0.5f;
@@ -38,6 +34,10 @@ public class Car : PooledObject, IVehicle, IObstacle
     private WheelCollider _rearRightWheel;
     
     private Obstacle CurrentObstacle => _carVision.CurrentObstacle;
+    
+    /// <summary>
+    /// Target position for the car to steer towards.
+    /// </summary>
     public Vector3 TargetPosition { get; set; }
     
     // Interface implementations
@@ -71,22 +71,19 @@ public class Car : PooledObject, IVehicle, IObstacle
 
     void Start()
     {
+        TrafficRuleManager.Instance.RuleUpdateEvent += HandleRuleChange;
         _totalMass = Rigidbody.mass + _frontLeftWheel.mass + _frontRightWheel.mass + _rearLeftWheel.mass + _rearRightWheel.mass;
     }
-    
+
     void Update()
     {
         // Move car
         float accel = Mathf.Clamp(GetTargetAcceleration(), -maxAcceleration, maxAcceleration);
         
         Rigidbody.AddForce(transform.forward * (accel * _totalMass), ForceMode.Force);
-        //print("Accel: "+accel);
-        //print("Speed: " + Rigidbody.velocity.magnitude);
         
         if (TargetPosition != Vector3.zero && Vector3.Distance(transform.position, TargetPosition) > 1f)
-        {
             SteerToPosition(TargetPosition);
-        }
         else
         {
             _frontLeftWheel.steerAngle = 0;
@@ -96,10 +93,9 @@ public class Car : PooledObject, IVehicle, IObstacle
 
     private void LateUpdate()
     {
+        // Prevent backwards acceleration when braking
         if (Vector3.Dot(transform.forward, Rigidbody.velocity) < 0)
-        {
             Rigidbody.velocity = Vector3.zero;
-        }
     }
 
     public override void Release()
@@ -111,6 +107,14 @@ public class Car : PooledObject, IVehicle, IObstacle
         TargetPosition = Vector3.zero;
         _carVision.CurrentObstacle = new Obstacle(null, Vector3.zero);
         base.Release();
+    }
+    
+    private void HandleRuleChange(TrafficRules rules)
+    {
+        maxSpeed = rules.SpeedLimit;
+        maxAcceleration = rules.MaxAcceleration;
+        targetDistanceFromObstacle = rules.MinimumObstacleDistance;
+        targetTimeFromObstacle = rules.SecondsBehindObstacle;
     }
 
     float GetMaxBrake()
@@ -144,7 +148,7 @@ public class Car : PooledObject, IVehicle, IObstacle
                 return defaultDistance;
         }
     }
-
+    
     private float GetTargetAcceleration()
     {
         float AdjustToSpeedLimit()
@@ -268,7 +272,6 @@ public class Car : PooledObject, IVehicle, IObstacle
         return a;
     }
     
-    // Temporary
     private float GetSpeedLimit() => maxSpeed; 
     
     /*IEnumerator WaitAccelerate(float torque)
