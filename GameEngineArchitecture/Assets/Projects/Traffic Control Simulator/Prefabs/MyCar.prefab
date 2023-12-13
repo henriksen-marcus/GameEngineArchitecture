@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pool: {fileID: 0}
-  maxAcceleration: 2
+  maxAcceleration: 1
   maxTurnAngle: 55
   targetDistanceFromObstacle: 3
   targetTimeFromObstacle: 3
@@ -176,7 +176,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 1ed1e3572c715804fb0515cd742a4544, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.704
+  m_Volume: 0.182
   m_Pitch: 1
   Loop: 0
   Mute: 0
