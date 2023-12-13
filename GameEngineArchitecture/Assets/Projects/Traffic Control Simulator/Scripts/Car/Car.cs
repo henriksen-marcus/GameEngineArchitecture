@@ -177,7 +177,7 @@ public class Car : PooledObject, IVehicle, IObstacle
                 }
                 
                 _gizmoColor = Color.red;
-                print("Full brake");
+                //print("Full brake");
                 return GetMaxBrake(); /*(-maxAcceleration);*/
             }
 
@@ -195,7 +195,7 @@ public class Car : PooledObject, IVehicle, IObstacle
                 
                 // We have to brake a little
                 _gizmoColor = Color.red;
-                print("Time brake");
+                //print("Time brake");
                 return (-comfortableAcceleration);
             } 
             
@@ -290,8 +290,6 @@ public class Car : PooledObject, IVehicle, IObstacle
         Gizmos.color = _gizmoColor;
         Gizmos.DrawWireSphere(transform.position + new Vector3(0, 2, 0), 0.3f);
         Vector3 direction = Quaternion.Euler(0, _currentTurnAngle, 0) * transform.forward;
-        Gizmos.DrawRay(_frontLeftWheel.transform.position, direction * 3f);
-        Gizmos.DrawRay(_frontRightWheel.transform.position, direction * 3f);
     }
 
     float GetSpeedTowardsObstacle()
