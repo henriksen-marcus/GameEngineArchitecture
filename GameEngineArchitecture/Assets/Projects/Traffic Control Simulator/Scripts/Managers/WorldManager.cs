@@ -7,13 +7,8 @@ using UnityEngine;
 /// </summary>
 public class WorldManager : Singleton<WorldManager>
 {
-    void Start()
+    public void Quit()
     {
-        
-    }
-    
-    void Update()
-    {
-        
+        Application.Quit();
     }
 }

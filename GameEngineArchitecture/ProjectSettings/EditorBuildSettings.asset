@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Projects/CameraScene/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Projects/PinballGame/PinballScene.unity
     guid: 9d9b23c54b9d2594e9cf4673762ee09a
+  - enabled: 1
+    path: Assets/Projects/Traffic Control Simulator/TrafficScene.unity
+    guid: 986a94dc92d5a1a4689bbe7050a9cf78
   m_configObjects: {}

@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// Component that uses forward-directed raycasting to
@@ -100,16 +97,14 @@ public class CarVision : MonoBehaviour
     {
         if (other.CompareTag("RoadSegment"))
         {
-            if (_roadSegmentList.Contains(other.name))
-            {
-                _roadSegmentList.Remove(other.name);
-                if (_roadSegmentList.Count == 0)
-                {
-                    var segment = other.GetComponent<RoadSegment>();
-                    if (segment && _car)
-                     _car.TargetPosition = goStraightAfterNoRoad ? segment.GetInfinityMarker(transform.forward) : Vector3.zero;
-                }
-            }
+            if (!_roadSegmentList.Contains(other.name)) return;
+            
+            _roadSegmentList.Remove(other.name);
+            if (_roadSegmentList.Count != 0) return;
+            
+            var segment = other.GetComponent<RoadSegment>();
+            if (segment && _car)
+                _car.TargetPosition = goStraightAfterNoRoad ? segment.GetInfinityMarker(transform.forward) : Vector3.zero;
         }
     }
 

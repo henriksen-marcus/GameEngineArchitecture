@@ -16,6 +16,7 @@ public class Marker : MonoBehaviour
         return new List<Vector3>(adjacentMarkers.Select(x => x.transform.position).ToList());
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (Selection.activeObject == gameObject)
@@ -31,6 +32,7 @@ public class Marker : MonoBehaviour
             Gizmos.color = Color.white;
         }
     }
+#endif
 }
 
 

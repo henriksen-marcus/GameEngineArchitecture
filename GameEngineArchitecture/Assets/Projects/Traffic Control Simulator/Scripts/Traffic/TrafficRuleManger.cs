@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class TrafficRuleManager : Singleton<TrafficRuleManager>
 {
-    [SerializeField] private GameObject trafficRulesUI;
-    [SerializeField] private float speedLimit = 10;
-    [SerializeField] private float maxAcceleration = 1;
-    [SerializeField] private float minimumObstacleDistance = 3;
-    [SerializeField] private float secondsBehindObstacle = 3;
+    private GameObject trafficRulesUI;
+    private float speedLimit = 10;
+    private float maxAcceleration = 1;
+    private float minimumObstacleDistance = 3;
+    private float secondsBehindObstacle = 3;
     private TrafficRules _trafficRules;
     
     public event Action<TrafficRules> RuleUpdateEvent;
